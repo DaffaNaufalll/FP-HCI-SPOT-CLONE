@@ -1,0 +1,262 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #fff;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #000;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.logo h2 {
+  color: #1DB954;
+  font-size: 24px;
+}
+
+.nav ul,
+.playlists ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav a,
+.playlists a {
+  color: #b3b3b3;
+  transition: color 0.2s ease;
+}
+
+.nav a:hover,
+.playlists a:hover {
+  color: #fff;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.main-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  width: 50%;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+/* Featured Section */
+.featured h2 {
+  margin-bottom: 10px;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.playlist-card {
+  background-color: #181818;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.playlist-card:hover {
+  background-color: #282828;
+}
+
+.playlist-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* Footer Player */
+.footer-player {
+  position: absolute;
+  bottom: 0;
+  left: 250px;
+  right: 0;
+  background-color: #181818;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  border-top: 1px solid #282828;
+}
+
+.track-info {
+  flex: 1;
+}
+
+.player-controls {
+  display: flex;
+  gap: 20px;
+  font-size: 24px;
+  align-items: center;
+}
+
+.player-controls button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.player-controls button:hover {
+  color: #1DB954;
+}
+
+/* Smart Shuffle Button */
+.smart-shuffle-btn {
+  background: rgba(29, 185, 84, 0.1) !important;
+  border: 1px solid rgba(29, 185, 84, 0.3) !important;
+  color: #1DB954 !important;
+  padding: 8px 16px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.3s ease !important;
+}
+
+.smart-shuffle-btn:hover {
+  background: rgba(29, 185, 84, 0.2) !important;
+  border-color: rgba(29, 185, 84, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+.smart-shuffle-btn.active {
+  background: #1DB954 !important;
+  color: #000 !important;
+  border-color: #1DB954 !important;
+}
+
+.smart-shuffle-btn.active .shuffle-icon {
+  animation: shuffleRotate 2s infinite linear;
+}
+
+@keyframes shuffleRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Song List Styles */
+.current-queue {
+  margin-top: 30px;
+}
+
+.current-queue h2 {
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.song-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.song-item.playing {
+  background-color: rgba(29, 185, 84, 0.2);
+  border-left: 3px solid #1DB954;
+}
+
+.song-item.next-smart {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-left: 3px solid #FFC107;
+}
+
+.song-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.song-details {
+  flex: 1;
+}
+
+.song-details .song-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.song-details .artist-name {
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.shuffle-status-message {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(29, 185, 84, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid #1DB954;
+}
+
+.shuffle-status-message p {
+  color: #1DB954;
+  font-size: 14px;
+  margin: 0;
+}
+
+.volume input[type="range"] {
+  width: 100px;
+}

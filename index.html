@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Spotify Clone</title>
+  
+  <!-- Link to the CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h2>MyMusic</h2>
+    </div>
+    <nav class="nav">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Search</a></li>
+        <li><a href="#">Your Library</a></li>
+      </ul>
+    </nav>
+    <div class="playlists">
+      <h3>Playlists</h3>
+      <ul>
+        <li><a href="#">Top Hits</a></li>
+        <li><a href="#">Chill Vibes</a></li>
+        <li><a href="#">Workout</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="main-header">
+      <input type="text" placeholder="Search music..." class="search-bar" />
+    </header>
+
+    <section class="featured">
+      <h2>Featured Playlists</h2>
+      <div class="playlist-grid">
+        <div class="playlist-card">
+          <img src="https://via.placeholder.com/150" alt="Playlist" />
+          <p>Daily Mix 1</p>
+        </div>
+        <div class="playlist-card">
+          <img src="https://via.placeholder.com/150" alt="Playlist" />
+          <p>Pop Hits</p>
+        </div>
+        <!-- Add more playlist cards here -->
+      </div>
+    </section>
+
+    <section class="current-queue">
+      <h2>Now Playing Queue</h2>
+      <div class="song-list">
+        <div class="song-item" data-song="0">
+          <img src="https://via.placeholder.com/40" alt="Album" />
+          <div class="song-details">
+            <p class="song-title">Blinding Lights</p>
+            <p class="artist-name">The Weeknd</p>
+          </div>
+        </div>
+        <div class="song-item" data-song="1">
+          <img src="https://via.placeholder.com/40" alt="Album" />
+          <div class="song-details">
+            <p class="song-title">Watermelon Sugar</p>
+            <p class="artist-name">Harry Styles</p>
+          </div>
+        </div>
+        <div class="song-item" data-song="2">
+          <img src="https://via.placeholder.com/40" alt="Album" />
+          <div class="song-details">
+            <p class="song-title">Good 4 U</p>
+            <p class="artist-name">Olivia Rodrigo</p>
+          </div>
+        </div>
+        <div class="song-item" data-song="3">
+          <img src="https://via.placeholder.com/40" alt="Album" />
+          <div class="song-details">
+            <p class="song-title">Heat Waves</p>
+            <p class="artist-name">Glass Animals</p>
+          </div>
+        </div>
+        <div class="song-item" data-song="4">
+          <img src="https://via.placeholder.com/40" alt="Album" />
+          <div class="song-details">
+            <p class="song-title">Levitating</p>
+            <p class="artist-name">Dua Lipa</p>
+          </div>
+        </div>
+      </div>
+      <div class="shuffle-status-message">
+        <p id="shuffleMessage">Smart Shuffle is ready to enhance your listening experience</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Music Player Footer -->
+  <footer class="footer-player">
+    <div class="track-info">
+      <p id="currentTrack"><strong>Blinding Lights</strong> — The Weeknd</p>
+    </div>
+    <div class="player-controls">
+      <button id="prevBtn">⏮️</button>
+      <button id="playBtn">▶️</button>
+      <button id="nextBtn">⏭️</button>
+      <button id="smartShuffleBtn" class="smart-shuffle-btn">
+        <span class="shuffle-icon">🔀</span>
+        <span class="shuffle-text">Smart Shuffle</span>
+      </button>
+    </div>
+    <div class="volume">
+      <input type="range" min="0" max="100" />
+    </div>
+  </footer>
+
+  <!-- Link to the JavaScript file -->
+  <script src="script.js" defer></script>
+</body>
+</html>
