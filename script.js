@@ -1,167 +1,272 @@
-// Smart Shuffle Spotify Clone Functionality
+// --- Playlists Data with Genre ---
+const playlists = {
+  "top-hits": {
+    title: "Top Hits",
+    songs: [
+      { title: "Blinding Lights", artist: "The Weeknd", genre: "Pop" },
+      { title: "Levitating", artist: "Dua Lipa", genre: "Pop" },
+      { title: "Save Your Tears", artist: "The Weeknd", genre: "Pop" },
+      { title: "Don't Start Now", artist: "Dua Lipa", genre: "Pop" },
+      { title: "Peaches", artist: "Justin Bieber", genre: "R&B" }
+    ]
+  },
+  "chill-vibes": {
+    title: "Chill Vibes",
+    songs: [
+      { title: "Sunflower", artist: "Post Malone", genre: "Hip-Hop" },
+      { title: "Lovely", artist: "Billie Eilish", genre: "Indie" },
+      { title: "Circles", artist: "Post Malone", genre: "Hip-Hop" },
+      { title: "Ocean Eyes", artist: "Billie Eilish", genre: "Indie" },
+      { title: "Someone You Loved", artist: "Lewis Capaldi", genre: "Pop" }
+    ]
+  },
+  "workout": {
+    title: "Workout",
+    songs: [
+      { title: "Stronger", artist: "Kanye West", genre: "Hip-Hop" },
+      { title: "Eye of the Tiger", artist: "Survivor", genre: "Rock" },
+      { title: "Can't Hold Us", artist: "Macklemore & Ryan Lewis", genre: "Hip-Hop" },
+      { title: "Titanium", artist: "David Guetta", genre: "EDM" },
+      { title: "Remember the Name", artist: "Fort Minor", genre: "Hip-Hop" }
+    ]
+  },
+  "daily-mix": {
+    title: "Daily Mix",
+    songs: [
+      { title: "Good 4 U", artist: "Olivia Rodrigo", genre: "Pop" },
+      { title: "drivers license", artist: "Olivia Rodrigo", genre: "Pop" },
+      { title: "Positions", artist: "Ariana Grande", genre: "Pop" },
+      { title: "Break My Heart", artist: "Dua Lipa", genre: "Pop" },
+      { title: "Stuck with U", artist: "Ariana Grande & Justin Bieber", genre: "Pop" }
+    ]
+  },
+  "top-trending": {
+    title: "Top Trending",
+    songs: [
+      { title: "Heat Waves", artist: "Glass Animals", genre: "Indie" },
+      { title: "Stay", artist: "The Kid LAROI & Justin Bieber", genre: "Pop" },
+      { title: "MONTERO (Call Me By Your Name)", artist: "Lil Nas X", genre: "Pop" },
+      { title: "Peaches", artist: "Justin Bieber", genre: "R&B" },
+      { title: "Save Your Tears", artist: "The Weeknd", genre: "Pop" }
+    ]
+  }
+};
 
-// Song data
-const songs = [
-  { title: "Blinding Lights", artist: "The Weeknd" },
-  { title: "Watermelon Sugar", artist: "Harry Styles" },
-  { title: "Good 4 U", artist: "Olivia Rodrigo" },
-  { title: "Heat Waves", artist: "Glass Animals" },
-  { title: "Levitating", artist: "Dua Lipa" }
+function getAllSongs() {
+  return Object.values(playlists).flatMap(pl => pl.songs);
+}
+
+// --- Queue State ---
+let defaultQueue = [
+  { title: "Blinding Lights", artist: "The Weeknd", genre: "Pop" },
+  { title: "Watermelon Sugar", artist: "Harry Styles", genre: "Pop" },
+  { title: "Good 4 U", artist: "Olivia Rodrigo", genre: "Pop" },
+  { title: "Heat Waves", artist: "Glass Animals", genre: "Indie" },
+  { title: "Levitating", artist: "Dua Lipa", genre: "Pop" }
 ];
+let currentQueue = [...defaultQueue];
+let currentQueueIndex = 0;
+let smartShuffleOn = false;
 
-// Player state
-let currentSongIndex = 0;
-let isPlaying = false;
-let smartShuffleEnabled = false;
-let playHistory = [];
-let smartQueue = [];
+// --- UI Elements ---
+const currentTrack = document.getElementById('currentTrack');
+const songListDiv = document.querySelector('.song-list');
+const smartShuffleBtn = document.getElementById('smartShuffleBtn');
+const shuffleMessage = document.getElementById('shuffleMessage');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 
-// DOM elements
-const playButton = document.getElementById("playBtn");
-const prevButton = document.getElementById("prevBtn");
-const nextButton = document.getElementById("nextBtn");
-const smartShuffleBtn = document.getElementById("smartShuffleBtn");
-const currentTrack = document.getElementById("currentTrack");
-const shuffleMessage = document.getElementById("shuffleMessage");
-const songItems = document.querySelectorAll(".song-item");
-
-// Update now playing display
-function updateNowPlaying() {
-  const song = songs[currentSongIndex];
-  currentTrack.innerHTML = `<strong>${song.title}</strong> — ${song.artist}`;
-  
-  // Update visual indicators
-  songItems.forEach((item, index) => {
-    item.classList.remove("playing", "next-smart");
-    if (index === currentSongIndex) {
-      item.classList.add("playing");
-    }
+// --- Navigation Highlight ---
+function setActiveNav(linkId) {
+  ['homeLink', 'searchLink', 'libraryLink'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
   });
-  
-  // Show next smart recommendation
-  if (smartShuffleEnabled && smartQueue.length > 0) {
-    const nextSongIndex = smartQueue[0];
-    songItems[nextSongIndex].classList.add("next-smart");
+  if (linkId) {
+    const el = document.getElementById(linkId);
+    if (el) el.classList.add('active');
   }
 }
 
-// Generate smart recommendations (simulated AI logic)
-function generateSmartQueue() {
-  if (!smartShuffleEnabled) return [];
-  
-  let availableSongs = songs.map((_, index) => index).filter(index => 
-    index !== currentSongIndex && !playHistory.slice(-2).includes(index)
-  );
-  
-  // Shuffle available songs for variety
-  for (let i = availableSongs.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [availableSongs[i], availableSongs[j]] = [availableSongs[j], availableSongs[i]];
-  }
-  
-  return availableSongs.slice(0, 2); // Return 2 smart picks
+function showSection(sectionId) {
+  ['homeSection', 'searchSection', 'librarySection', 'playlistSection'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === sectionId) ? '' : 'none';
+  });
 }
 
-// Play/Pause functionality
-playButton.addEventListener("click", () => {
-  isPlaying = !isPlaying;
-  playButton.textContent = isPlaying ? "⏸️" : "▶️";
-  
-  if (smartShuffleEnabled) {
-    shuffleMessage.textContent = isPlaying ? 
-      "🎵 Playing with Smart Shuffle - discovering perfect matches!" : 
-      "⏸️ Paused - Smart Shuffle ready for your next track";
-  }
+// --- Navigation Events ---
+document.getElementById('homeLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  setActiveNav('homeLink');
+  showSection('homeSection');
+  setQueue(defaultQueue, 0);
+});
+document.getElementById('searchLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  setActiveNav('searchLink');
+  showSection('searchSection');
+});
+document.getElementById('libraryLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  setActiveNav('libraryLink');
+  showSection('librarySection');
 });
 
-// Previous song
-prevButton.addEventListener("click", () => {
-  if (playHistory.length > 0) {
-    currentSongIndex = playHistory.pop();
-  } else {
-    currentSongIndex = currentSongIndex > 0 ? currentSongIndex - 1 : songs.length - 1;
-  }
-  updateNowPlaying();
-  shuffleMessage.textContent = "⏮️ Playing previous track";
+// --- Playlist Navigation (Sidebar) ---
+document.querySelectorAll('.playlist-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    setActiveNav(null);
+    showSection('playlistSection');
+    const key = this.getAttribute('data-playlist');
+    showPlaylist(key);
+  });
 });
 
-// Next song
-nextButton.addEventListener("click", () => {
-  playHistory.push(currentSongIndex);
-  
-  if (smartShuffleEnabled && smartQueue.length > 0) {
-    // Use smart recommendation
-    currentSongIndex = smartQueue.shift();
-    shuffleMessage.textContent = "🎯 Smart pick! This song perfectly matches your taste";
-    
-    // Refresh smart queue
-    smartQueue = [...smartQueue, ...generateSmartQueue()].slice(0, 2);
-  } else {
-    // Regular next song
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
-    shuffleMessage.textContent = smartShuffleEnabled ? 
-      "⏭️ Next track (Smart Shuffle active)" : 
-      "⏭️ Next track";
-  }
-  
-  updateNowPlaying();
+// --- Playlist Navigation (Featured Playlists) ---
+document.querySelectorAll('.featured-playlist').forEach(card => {
+  card.addEventListener('click', function() {
+    setActiveNav(null);
+    showSection('playlistSection');
+    const key = this.getAttribute('data-playlist');
+    showPlaylist(key);
+  });
 });
 
-// Smart Shuffle toggle
-smartShuffleBtn.addEventListener("click", () => {
-  smartShuffleEnabled = !smartShuffleEnabled;
-  
-  if (smartShuffleEnabled) {
-    smartShuffleBtn.classList.add("active");
-    shuffleMessage.textContent = "✨ Smart Shuffle activated! AI is analyzing your preferences...";
-    
-    // Generate initial smart queue
-    smartQueue = generateSmartQueue();
-    
-    setTimeout(() => {
-      shuffleMessage.textContent = "🎧 Smart Shuffle ready! Your next songs are perfectly curated for you.";
-    }, 2000);
-  } else {
-    smartShuffleBtn.classList.remove("active");
-    shuffleMessage.textContent = "🔄 Smart Shuffle off - playing in normal order";
-    smartQueue = [];
-  }
-  
-  updateNowPlaying();
-});
+function showPlaylist(key) {
+  const playlist = playlists[key];
+  document.getElementById('playlistTitle').textContent = playlist.title;
+  document.getElementById('playlistSongs').innerHTML = playlist.songs.map((song, idx) =>
+    `<div class="song-item" data-song-idx="${idx}" data-playlist="${key}">
+      <p class="song-title">${song.title}</p>
+      <p class="artist-name">${song.artist}</p>
+    </div>`
+  ).join('');
+  // Add click listeners for new song items
+  document.querySelectorAll('#playlistSongs .song-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const idx = parseInt(this.getAttribute('data-song-idx'));
+      const plKey = this.getAttribute('data-playlist');
+      setQueue(playlists[plKey].songs, idx);
+      showSection('homeSection');
+    });
+  });
+}
 
-// Song selection from list
-songItems.forEach((item, index) => {
-  item.addEventListener("click", () => {
-    playHistory.push(currentSongIndex);
-    currentSongIndex = index;
-    
-    if (smartShuffleEnabled) {
-      smartQueue = generateSmartQueue();
-      shuffleMessage.textContent = "🎵 Great choice! Smart Shuffle is updating your recommendations...";
+// --- Set Queue and Update UI ---
+function setQueue(queue, idx = 0) {
+  currentQueue = [...queue];
+  currentQueueIndex = idx;
+  renderQueue();
+  updateTrackInfo();
+}
+
+// --- Render Now Playing Queue ---
+function renderQueue() {
+  songListDiv.innerHTML = currentQueue.map((song, idx) =>
+    `<div class="song-item${idx === currentQueueIndex ? ' active' : ''}" data-queue-idx="${idx}">
+      <img src="https://via.placeholder.com/40" alt="Album" />
+      <div class="song-details">
+        <p class="song-title">${song.title}</p>
+        <p class="artist-name">${song.artist}</p>
+      </div>
+    </div>`
+  ).join('');
+  // Add click listeners for queue
+  document.querySelectorAll('.song-list .song-item').forEach((item, idx) => {
+    item.addEventListener('click', function() {
+      currentQueueIndex = idx;
+      updateTrackInfo();
+      renderQueue();
+    });
+  });
+}
+
+// --- Update Music Player ---
+function updateTrackInfo() {
+  if (currentTrack && currentQueue[currentQueueIndex]) {
+    currentTrack.innerHTML = `<strong>${currentQueue[currentQueueIndex].title}</strong> — ${currentQueue[currentQueueIndex].artist}`;
+  }
+}
+
+// --- Smart Shuffle by Genre Only ---
+if (smartShuffleBtn && shuffleMessage) {
+  smartShuffleBtn.addEventListener('click', function() {
+    smartShuffleOn = !smartShuffleOn;
+    if (smartShuffleOn) {
+      shuffleMessage.textContent = "Smart Shuffle is ON! Suggesting similar genre songs...";
+      const baseSongs = getAllSongs();
+      const seed = currentQueue[currentQueueIndex] || baseSongs[Math.floor(Math.random() * baseSongs.length)];
+      // Only match by genre (not artist)
+      const similar = baseSongs.filter(
+        s => s.genre === seed.genre && !(s.title === seed.title && s.artist === seed.artist)
+      );
+      const queue = [seed, ...(similar.length ? similar : baseSongs.filter(s => !(s.title === seed.title && s.artist === seed.artist)).sort(() => Math.random() - 0.5).slice(0, 4))];
+      setQueue(queue, 0);
+      setTimeout(() => {
+        shuffleMessage.textContent = "Smart Shuffle is ready to enhance your listening experience";
+      }, 2000);
     } else {
-      shuffleMessage.textContent = `🎵 Now playing: ${songs[index].title}`;
+      shuffleMessage.textContent = "Smart Shuffle is OFF. Back to original queue.";
+      setQueue(defaultQueue, 0);
+      setTimeout(() => {
+        shuffleMessage.textContent = "Smart Shuffle is ready to enhance your listening experience";
+      }, 2000);
     }
-    
-    updateNowPlaying();
-    
-    // Auto-play
-    isPlaying = true;
-    playButton.textContent = "⏸️";
   });
+}
+
+
+// --- Player Controls ---
+if (playBtn) {
+  let isPlaying = false;
+  playBtn.addEventListener('click', function() {
+    isPlaying = !isPlaying;
+    playBtn.textContent = isPlaying ? '⏸️' : '▶️';
+  });
+}
+
+if (prevBtn && nextBtn) {
+  prevBtn.addEventListener('click', function() {
+    currentQueueIndex = (currentQueueIndex - 1 + currentQueue.length) % currentQueue.length;
+    updateTrackInfo();
+    renderQueue();
+  });
+  nextBtn.addEventListener('click', function() {
+    currentQueueIndex = (currentQueueIndex + 1) % currentQueue.length;
+    updateTrackInfo();
+    renderQueue();
+  });
+}
+
+// --- Search Bar Interactivity ---
+const searchBar = document.querySelector('.search-bar');
+const searchResults = document.getElementById('searchResults');
+
+searchBar.addEventListener('focus', function() {
+  setActiveNav('searchLink');
+  showSection('searchSection');
 });
 
-// Search functionality
-const searchBar = document.querySelector(".search-bar");
-searchBar.addEventListener("input", (e) => {
-  const value = e.target.value.toLowerCase();
-  console.log("Searching for:", value);
-  
-  if (smartShuffleEnabled && value) {
-    shuffleMessage.textContent = `🔍 Searching "${value}" - Smart Shuffle will enhance results!`;
+searchBar.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    setActiveNav('searchLink');
+    showSection('searchSection');
+    const query = searchBar.value.trim();
+    if (query) {
+      // Fake search results for demo
+      searchResults.innerHTML = `
+        <h3>Results for "${query}"</h3>
+        <div class="song-item"><p class="song-title">${query} Song 1</p><p class="artist-name">Artist A</p></div>
+        <div class="song-item"><p class="song-title">${query} Song 2</p><p class="artist-name">Artist B</p></div>
+      `;
+    } else {
+      searchResults.innerHTML = "<p>No results found.</p>";
+    }
   }
 });
 
-// Initialize the player
-updateNowPlaying();
-shuffleMessage.textContent = "🎵 Ready to play! Try Smart Shuffle for personalized recommendations.";
+// --- Initial Render ---
+setQueue(defaultQueue, 0);

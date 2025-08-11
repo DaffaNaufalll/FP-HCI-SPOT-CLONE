@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Spotify Clone</title>
-  
-  <!-- Link to the CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,17 +14,19 @@
     </div>
     <nav class="nav">
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Search</a></li>
-        <li><a href="#">Your Library</a></li>
+        <li><a href="#" id="homeLink" class="active">Home</a></li>
+        <li><a href="#" id="searchLink">Search</a></li>
+        <li><a href="#" id="libraryLink">Your Library</a></li>
       </ul>
     </nav>
     <div class="playlists">
       <h3>Playlists</h3>
       <ul>
-        <li><a href="#">Top Hits</a></li>
-        <li><a href="#">Chill Vibes</a></li>
-        <li><a href="#">Workout</a></li>
+        <li><a href="#" class="playlist-link" data-playlist="top-hits">Top Hits</a></li>
+        <li><a href="#" class="playlist-link" data-playlist="chill-vibes">Chill Vibes</a></li>
+        <li><a href="#" class="playlist-link" data-playlist="workout">Workout</a></li>
+        <li><a href="#" class="playlist-link" data-playlist="daily-mix">Daily Mix</a></li>
+        <li><a href="#" class="playlist-link" data-playlist="top-trending">Top Trending</a></li>
       </ul>
     </div>
   </aside>
@@ -37,63 +37,88 @@
       <input type="text" placeholder="Search music..." class="search-bar" />
     </header>
 
-    <section class="featured">
+    <section id="homeSection">
       <h2>Featured Playlists</h2>
       <div class="playlist-grid">
-        <div class="playlist-card">
-          <img src="https://via.placeholder.com/150" alt="Playlist" />
-          <p>Daily Mix 1</p>
+        <div class="playlist-card featured-playlist" data-playlist="daily-mix">
+          <img src="https://via.placeholder.com/150/1db954/ffffff?text=Daily+Mix" alt="Daily Mix" />
+          <p>Daily Mix</p>
         </div>
-        <div class="playlist-card">
-          <img src="https://via.placeholder.com/150" alt="Playlist" />
-          <p>Pop Hits</p>
+        <div class="playlist-card featured-playlist" data-playlist="top-trending">
+          <img src="https://via.placeholder.com/150/1db954/ffffff?text=Top+Trending" alt="Top Trending" />
+          <p>Top Trending</p>
         </div>
-        <!-- Add more playlist cards here -->
+        <div class="playlist-card featured-playlist" data-playlist="top-hits">
+          <img src="https://via.placeholder.com/150/1db954/ffffff?text=Top+Hits" alt="Top Hits" />
+          <p>Top Hits</p>
+        </div>
+        <div class="playlist-card featured-playlist" data-playlist="chill-vibes">
+          <img src="https://via.placeholder.com/150/1db954/ffffff?text=Chill+Vibes" alt="Chill Vibes" />
+          <p>Chill Vibes</p>
+        </div>
+        <div class="playlist-card featured-playlist" data-playlist="workout">
+          <img src="https://via.placeholder.com/150/1db954/ffffff?text=Workout" alt="Workout" />
+          <p>Workout</p>
+        </div>
       </div>
+      <section class="current-queue">
+        <h2>Now Playing Queue</h2>
+        <div class="song-list">
+          <div class="song-item" data-song="0">
+            <img src="https://via.placeholder.com/40" alt="Album" />
+            <div class="song-details">
+              <p class="song-title">Blinding Lights</p>
+              <p class="artist-name">The Weeknd</p>
+            </div>
+          </div>
+          <div class="song-item" data-song="1">
+            <img src="https://via.placeholder.com/40" alt="Album" />
+            <div class="song-details">
+              <p class="song-title">Watermelon Sugar</p>
+              <p class="artist-name">Harry Styles</p>
+            </div>
+          </div>
+          <div class="song-item" data-song="2">
+            <img src="https://via.placeholder.com/40" alt="Album" />
+            <div class="song-details">
+              <p class="song-title">Good 4 U</p>
+              <p class="artist-name">Olivia Rodrigo</p>
+            </div>
+          </div>
+          <div class="song-item" data-song="3">
+            <img src="https://via.placeholder.com/40" alt="Album" />
+            <div class="song-details">
+              <p class="song-title">Heat Waves</p>
+              <p class="artist-name">Glass Animals</p>
+            </div>
+          </div>
+          <div class="song-item" data-song="4">
+            <img src="https://via.placeholder.com/40" alt="Album" />
+            <div class="song-details">
+              <p class="song-title">Levitating</p>
+              <p class="artist-name">Dua Lipa</p>
+            </div>
+          </div>
+        </div>
+        <div class="shuffle-status-message">
+          <p id="shuffleMessage">Smart Shuffle is ready to enhance your listening experience</p>
+        </div>
+      </section>
     </section>
 
-    <section class="current-queue">
-      <h2>Now Playing Queue</h2>
-      <div class="song-list">
-        <div class="song-item" data-song="0">
-          <img src="https://via.placeholder.com/40" alt="Album" />
-          <div class="song-details">
-            <p class="song-title">Blinding Lights</p>
-            <p class="artist-name">The Weeknd</p>
-          </div>
-        </div>
-        <div class="song-item" data-song="1">
-          <img src="https://via.placeholder.com/40" alt="Album" />
-          <div class="song-details">
-            <p class="song-title">Watermelon Sugar</p>
-            <p class="artist-name">Harry Styles</p>
-          </div>
-        </div>
-        <div class="song-item" data-song="2">
-          <img src="https://via.placeholder.com/40" alt="Album" />
-          <div class="song-details">
-            <p class="song-title">Good 4 U</p>
-            <p class="artist-name">Olivia Rodrigo</p>
-          </div>
-        </div>
-        <div class="song-item" data-song="3">
-          <img src="https://via.placeholder.com/40" alt="Album" />
-          <div class="song-details">
-            <p class="song-title">Heat Waves</p>
-            <p class="artist-name">Glass Animals</p>
-          </div>
-        </div>
-        <div class="song-item" data-song="4">
-          <img src="https://via.placeholder.com/40" alt="Album" />
-          <div class="song-details">
-            <p class="song-title">Levitating</p>
-            <p class="artist-name">Dua Lipa</p>
-          </div>
-        </div>
-      </div>
-      <div class="shuffle-status-message">
-        <p id="shuffleMessage">Smart Shuffle is ready to enhance your listening experience</p>
-      </div>
+    <section id="searchSection" style="display:none;">
+      <h2>Search</h2>
+      <div id="searchResults"><p>Type in the search bar and press Enter to search.</p></div>
+    </section>
+
+    <section id="librarySection" style="display:none;">
+      <h2>Your Library</h2>
+      <p>Your saved playlists and songs will appear here.</p>
+    </section>
+
+    <section id="playlistSection" style="display:none;">
+      <h2 id="playlistTitle"></h2>
+      <div id="playlistSongs"></div>
     </section>
   </main>
 
@@ -116,7 +141,6 @@
     </div>
   </footer>
 
-  <!-- Link to the JavaScript file -->
   <script src="script.js" defer></script>
 </body>
 </html>
